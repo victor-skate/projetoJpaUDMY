@@ -17,7 +17,7 @@ public class Program {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("exemplo-jpa");
 		EntityManager em = emf.createEntityManager();	
 		
-		//ABRE A TRANSAÇÃO POSSIBILITANDO INSERÇÕES NO BANCO. JÁ NAS CONSULTAS, ESSE COMANDO ATRAPALHA, POIS LANÇA UMA EXCEPTION
+		//ABRE A TRANSAÇÃO POSSIBILITANDO MANIPULAÇÕES NO BANCO, PARA CONSULTAS NÃO É NECESSARIO ESSE COMANDO
 		//em.getTransaction().begin();
 		
 		/*
@@ -27,13 +27,23 @@ public class Program {
 		*/
 		
 		/*
-		//CONFIRMA AS ALTERAÇÕES REALIZADAS
+		//CONFIRMA AS ALTERAÇÕES REALIZADAS, É OBRIGATORIA A UTILIZAÇÃO DESSE COMANDO PARA INSERÇÃO E REMOÇÃO
 		em.getTransaction().commit();
 		System.out.println("pronto!");
 		 */
 		
-		Pessoa p = em.find(Pessoa.class,2);
-		System.out.println(p);
+		//PARA EXCLUIR UM OBJETO É NECESSARIO PRIMEIRO TRAZER OS DADOS EM UMA CONSULTA SQL
+		Pessoa p = em.find(Pessoa.class,4);
+		//System.out.println(p);
+		
+		//APÓS TRAZER OS DADOS DA CONSULTA
+		em.getTransaction().begin();
+		
+		//SE TORNA POSSÍVEL EXCLUIR O OBJ DO BANCO
+		em.remove(p);
+		
+		//CONFIRMA A EXCLUSÃO
+		em.getTransaction().commit();
 		
 		em.close();
 		emf.close();
